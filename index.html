@@ -613,9 +613,9 @@ body {
         <div class="msg-avatar" style="background:#5b8fca;">王</div>
         <div class="msg-bubble" style="background:#fff;padding:0;overflow:hidden;border:1px solid #e0e0e0;border-radius:4px;">
           <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;">
-            <div style="width:34px;height:40px;background:linear-gradient(135deg,#1677ff,#0958d9);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:800;">PDF</div>
+            <div style="width:34px;height:40px;background:linear-gradient(135deg,#2b5797,#3a6fb0);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:8px;font-weight:800;letter-spacing:-0.5px;">DOCX</div>
             <div>
-              <div style="font-size:13px;font-weight:500;color:#1a1a1a;">李小雨_单词学习规划_20260610.pdf</div>
+              <div style="font-size:13px;font-weight:500;color:#1a1a1a;">李小雨_单词学习规划_20260610.docx</div>
               <div style="font-size:11px;color:#aaa;">1.2 MB</div>
             </div>
           </div>
@@ -779,7 +779,7 @@ body {
   <button class="demo-btn" onclick="goStep(2)">3.确认</button>
   <button class="demo-btn" onclick="goStep(3)">4.生成中</button>
   <button class="demo-btn" onclick="goStep(4)">5.摘要</button>
-  <button class="demo-btn" onclick="goStep(5)">6.PDF</button>
+  <button class="demo-btn" onclick="goStep(5)">6.Word</button>
 </div>
 
 <script>
@@ -863,13 +863,13 @@ const steps = [
     bubble.innerHTML = `
       <div class="sb-avatar">AI</div>
       <div>
-        <div class="sb-bubble">PDF 已生成，可以下载或直接发给客户 \u{1F389}</div>
+        <div class="sb-bubble">Word 文档已生成，可以下载或直接发给客户 \u{1F389}</div>
         <div class="pdf-card">
           <div class="pdf-card-body">
-            <div class="pdf-icon">PDF</div>
+            <div class="pdf-icon" style="background:linear-gradient(135deg,#2b5797,#3a6fb0);font-size:9px;letter-spacing:-0.5px;">DOCX</div>
             <div class="pdf-info">
-              <div class="pdf-name">李小雨_单词学习规划_20260610.pdf</div>
-              <div class="pdf-size">1.2 MB</div>
+              <div class="pdf-name">李小雨_单词学习规划_20260610.docx</div>
+              <div class="pdf-size">856 KB</div>
             </div>
           </div>
           <div class="pdf-card-footer">
