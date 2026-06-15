@@ -8,369 +8,413 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
   font-family: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
-  background: #f0f2f5;
+  background: #f5f6fa;
   color: #1a1a1a;
   font-size: 14px;
+  min-height: 100vh;
 }
 
-/* 顶部栏 */
+/* 顶部 */
 .top-bar {
   background: #fff;
-  padding: 16px 24px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #e8e8e8;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  gap: 12px;
   flex-wrap: wrap;
 }
 .top-bar-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #1a1a1a;
-  margin-right: 8px;
+  margin-right: 16px;
 }
-.teacher-select {
+.filter-group {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: #f5f5f5;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 6px 12px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: border-color 0.2s;
+  font-size: 13px;
+  color: #666;
 }
-.teacher-select:hover { border-color: #1677ff; }
-.teacher-select select {
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  font-weight: 600;
+.filter-group select, .filter-group input {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 13px;
   font-family: inherit;
   outline: none;
-  cursor: pointer;
-  color: #1a1a1a;
+  background: #fff;
+  color: #333;
 }
+.filter-group select:focus, .filter-group input:focus { border-color: #1677ff; }
 
-.view-toggle {
+/* 导航栏 */
+.nav-row {
+  background: #fff;
+  padding: 10px 20px;
   display: flex;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  overflow: hidden;
-  margin-left: auto;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e8e8e8;
+  flex-wrap: wrap;
 }
-.view-btn {
-  padding: 6px 16px;
+.view-tabs {
+  display: flex;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.v-tab {
+  padding: 4px 14px;
   font-size: 13px;
   border: none;
   background: #fff;
   cursor: pointer;
   font-family: inherit;
-  font-weight: 500;
   color: #666;
-  transition: all 0.15s;
+  border-right: 1px solid #d9d9d9;
 }
-.view-btn.active {
-  background: #1677ff;
-  color: #fff;
-}
-.view-btn:hover:not(.active) { background: #f5f5f5; }
+.v-tab:last-child { border-right: none; }
+.v-tab.active { background: #1677ff; color: #fff; }
+.v-tab:hover:not(.active) { background: #f5f5f5; }
 
-.nav-bar {
+.nav-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 .nav-btn {
-  width: 30px; height: 30px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  width: 28px; height: 28px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   color: #666;
   font-size: 14px;
-  transition: all 0.15s;
 }
 .nav-btn:hover { border-color: #1677ff; color: #1677ff; }
-.nav-label {
-  font-size: 14px;
-  font-weight: 600;
-  min-width: 180px;
+.nav-date {
+  font-size: 13px;
+  color: #333;
+  padding: 4px 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background: #fff;
+  min-width: 140px;
   text-align: center;
 }
 .today-btn {
   padding: 4px 12px;
-  border: 1px solid #1677ff;
-  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   background: #fff;
-  color: #1677ff;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   font-family: inherit;
-  font-weight: 500;
-  transition: all 0.15s;
+  color: #333;
 }
-.today-btn:hover { background: #1677ff; color: #fff; }
+.today-btn:hover { border-color: #1677ff; color: #1677ff; }
 
 /* 图例 */
-.legend {
+.legend-row {
+  background: #fff;
+  padding: 8px 20px;
   display: flex;
   gap: 20px;
-  padding: 10px 24px;
-  background: #fff;
-  border-top: 1px solid #f0f0f0;
-  flex-wrap: wrap;
+  border-bottom: 1px solid #e8e8e8;
 }
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   font-size: 12px;
   color: #666;
 }
-.legend-dot {
-  width: 14px; height: 14px;
-  border-radius: 3px;
+.leg-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
-.legend-dot.fixed { background: #e6f4ff; border: 1px solid #91caff; }
-.legend-dot.sxy { background: #f6ffed; border: 1px solid #b7eb8f; }
-.legend-dot.oes { background: #fff7e6; border: 1px solid #ffd591; }
-.legend-dot.free { background: #fff; border: 1px dashed #d9d9d9; }
+.leg-dot.blue { background: #1677ff; }
+.leg-dot.red { background: #ff4d4f; }
+.leg-dot.green { background: #52c41a; }
+.leg-dot.orange { background: #fa8c16; }
+.leg-dot.gray { background: #d9d9d9; }
 
-/* 课表容器 */
-.schedule-wrap {
-  padding: 16px 24px;
+/* ── 课表 ── */
+.schedule-container {
+  display: flex;
+  position: relative;
+}
+.schedule-main {
+  flex: 1;
   overflow-x: auto;
+  padding: 0;
 }
 
-/* 周视图 */
-.week-table {
+/* 周视图表格 */
+.cal-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 860px;
   border-collapse: collapse;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   table-layout: fixed;
 }
-.week-table th {
-  background: #fafafa;
-  padding: 10px 4px;
+.cal-table th {
+  padding: 12px 4px;
   text-align: center;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 13px;
   font-weight: 600;
+  font-size: 15px;
   color: #333;
+  border-bottom: 2px solid #e8e8e8;
   border-right: 1px solid #f0f0f0;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
-.week-table th:first-child { width: 60px; }
-.week-table th .day-name { color: #999; font-weight: 400; font-size: 12px; }
-.week-table th.today { color: #1677ff; }
-.week-table th.today .day-name { color: #1677ff; }
-.week-table td.time-col {
-  width: 60px;
-  padding: 0 6px;
-  font-size: 11px;
-  color: #bbb;
-  text-align: right;
+.cal-table th:first-child {
+  width: 56px;
+  font-size: 12px;
+  color: #999;
+  font-weight: 400;
+}
+.cal-table th .th-date {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+.cal-table th .th-day {
+  font-size: 12px;
+  color: #999;
+  font-weight: 400;
+}
+.cal-table th.today .th-date { color: #1677ff; }
+.cal-table th.today .th-day { color: #1677ff; }
+
+.cal-table td {
   border-right: 1px solid #f0f0f0;
-  vertical-align: top;
-  height: 40px;
-}
-.week-table td.day-cell {
-  border-right: 1px solid #f5f5f5;
-  border-bottom: 1px solid #f8f8f8;
-  height: 40px;
+  border-bottom: 1px solid #f0f0f0;
+  height: 50px;
   padding: 0;
   vertical-align: top;
-}
-.week-table tr.half-row td.day-cell { border-bottom: 1px dashed #f5f5f5; }
-
-/* 日期列容器 - 用于绝对定位课节块 */
-.day-column-wrap {
   position: relative;
-  min-width: 0;
+}
+.cal-table td:first-child {
+  width: 56px;
+  font-size: 12px;
+  color: #bbb;
+  text-align: right;
+  padding-right: 8px;
+  padding-top: 0;
+  vertical-align: top;
+  line-height: 1;
+  border-right: 1px solid #e8e8e8;
+}
+.cal-table tr.half td { border-bottom: 1px dashed #f5f5f5; }
+
+/* 日期列 wrapper */
+.col-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-/* 课节块 */
-.slot {
+/* 课节条目 */
+.entry {
   position: absolute;
-  left: 2px; right: 2px;
-  border-radius: 4px;
-  padding: 3px 5px;
+  left: 3px; right: 3px;
+  border-radius: 3px;
+  padding: 3px 6px;
   font-size: 11px;
-  line-height: 1.3;
-  overflow: hidden;
+  line-height: 1.4;
   cursor: pointer;
+  overflow: hidden;
   z-index: 2;
   transition: box-shadow 0.15s;
 }
-.slot:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  z-index: 5;
+.entry:hover { box-shadow: 0 1px 6px rgba(0,0,0,0.12); z-index: 5; }
+.entry .e-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
 }
-.slot.fixed {
-  background: #e6f4ff;
-  border: 1px solid #91caff;
-  color: #0958d9;
+.entry .e-time { font-weight: 500; color: #333; }
+.entry .e-desc { color: #999; font-size: 10px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 固定时间（可被预约） */
+.entry.fixed { background: #f0f7ff; }
+.entry.fixed .e-dot { background: #1677ff; }
+.entry.fixed .e-time { color: #1677ff; }
+.entry.fixed .e-desc { color: #69b1ff; }
+
+/* 省心约 - 未开课 */
+.entry.sxy { background: #fff1f0; }
+.entry.sxy .e-dot { background: #ff4d4f; }
+.entry.sxy .e-time { color: #cf1322; }
+.entry.sxy .e-desc { color: #ff7875; }
+
+/* OES */
+.entry.oes { background: #fff7e6; }
+.entry.oes .e-dot { background: #fa8c16; }
+.entry.oes .e-time { color: #d46b08; }
+.entry.oes .e-desc { color: #ffc069; }
+
+/* ── 右侧详情面板 ── */
+.detail-panel {
+  width: 0;
+  overflow: hidden;
+  background: #fff;
+  border-left: 1px solid #e8e8e8;
+  transition: width 0.25s ease;
+  flex-shrink: 0;
 }
-.slot.sxy {
-  background: #f6ffed;
-  border: 1px solid #b7eb8f;
-  color: #389e0d;
+.detail-panel.open { width: 360px; }
+.dp-inner {
+  width: 360px;
+  height: 100%;
+  overflow-y: auto;
 }
-.slot.oes {
-  background: #fff7e6;
-  border: 1px solid #ffd591;
-  color: #d46b08;
+.dp-header {
+  padding: 20px;
+  position: relative;
 }
-.slot.free {
-  background: rgba(255,255,255,0.6);
-  border: 1px dashed #d9d9d9;
-  color: #bbb;
-  font-style: italic;
+.dp-header.sxy { background: #ff4d4f; }
+.dp-header.oes { background: #fa8c16; }
+.dp-header.fixed { background: #1677ff; }
+.dp-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: rgba(255,255,255,0.7);
+  font-size: 18px;
 }
-.slot-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.slot-info { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; font-size: 10px; }
+.dp-close:hover { color: #fff; }
+.dp-status { font-size: 16px; font-weight: 700; color: #fff; }
+.dp-time { font-size: 13px; color: rgba(255,255,255,0.85); margin-top: 4px; }
+
+.dp-body { padding: 16px 20px; }
+.dp-row {
+  display: flex;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 13px;
+}
+.dp-row:last-child { border-bottom: none; }
+.dp-label { color: #999; width: 76px; flex-shrink: 0; }
+.dp-value { color: #1a1a1a; font-weight: 500; word-break: break-all; }
 
 /* 日视图 */
-.day-table {
+.day-cal-table {
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
   border-collapse: collapse;
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   table-layout: fixed;
 }
-.day-table td.time-col { width: 60px; padding: 0 6px; font-size: 11px; color: #bbb; text-align: right; border-right: 1px solid #f0f0f0; vertical-align: top; height: 60px; }
-.day-table td.day-cell { border-bottom: 1px solid #f8f8f8; height: 60px; padding: 0; }
-.day-table tr.half-row td.day-cell { border-bottom: 1px dashed #f5f5f5; }
-.day-slot {
+.day-cal-table td {
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  height: 60px;
+  padding: 0;
+  vertical-align: top;
+  position: relative;
+}
+.day-cal-table td:first-child {
+  width: 56px;
+  font-size: 12px;
+  color: #bbb;
+  text-align: right;
+  padding-right: 8px;
+  vertical-align: top;
+  line-height: 1;
+  border-right: 1px solid #e8e8e8;
+}
+.day-cal-table tr.half td { border-bottom: 1px dashed #f5f5f5; }
+.day-entry {
   position: absolute;
   left: 4px; right: 4px;
-  border-radius: 6px;
-  padding: 8px 10px;
+  border-radius: 4px;
+  padding: 6px 10px;
   font-size: 12px;
   line-height: 1.5;
   cursor: pointer;
   z-index: 2;
   transition: box-shadow 0.15s;
 }
-.day-slot:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 5; }
-.day-slot.fixed { background: #e6f4ff; border: 1px solid #91caff; color: #0958d9; }
-.day-slot.sxy { background: #f6ffed; border: 1px solid #b7eb8f; color: #389e0d; }
-.day-slot.oes { background: #fff7e6; border: 1px solid #ffd591; color: #d46b08; }
-.day-slot.free { background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; color: #bbb; }
-.day-slot .ds-row { display: flex; justify-content: space-between; align-items: center; }
-.day-slot .ds-name { font-weight: 700; font-size: 14px; }
-.day-slot .ds-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
-.day-slot.sxy .ds-tag { background: #d9f7be; color: #389e0d; }
-.day-slot.oes .ds-tag { background: #ffe7ba; color: #d46b08; }
-.day-slot .ds-detail { font-size: 11px; opacity: 0.8; margin-top: 2px; }
-
-/* 弹窗 */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3);
-  z-index: 100;
-  justify-content: center;
-  align-items: center;
-}
-.modal-overlay.show { display: flex; }
-.modal {
-  background: #fff;
-  border-radius: 10px;
-  padding: 24px;
-  min-width: 340px;
-  max-width: 420px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-}
-.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-.modal-close { cursor: pointer; color: #999; font-size: 18px; }
-.modal-close:hover { color: #333; }
-.modal-row { display: flex; padding: 6px 0; font-size: 13px; }
-.modal-label { color: #999; width: 80px; flex-shrink: 0; }
-.modal-value { color: #1a1a1a; font-weight: 500; }
-.modal-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-.modal-tag.sxy { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
-.modal-tag.oes { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+.day-entry:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 5; }
+.day-entry.fixed { background: #f0f7ff; border-left: 3px solid #1677ff; }
+.day-entry.sxy { background: #fff1f0; border-left: 3px solid #ff4d4f; }
+.day-entry.oes { background: #fff7e6; border-left: 3px solid #fa8c16; }
+.day-entry .de-name { font-weight: 700; font-size: 13px; color: #333; }
+.day-entry .de-time { font-size: 11px; color: #999; }
+.day-entry .de-info { font-size: 11px; color: #999; margin-top: 2px; }
 
 .hidden { display: none; }
 </style>
 </head>
 <body>
 
-<!-- 顶部栏 -->
+<!-- 顶部 -->
 <div class="top-bar">
-  <div class="top-bar-title">主讲老师课表</div>
-  <div class="teacher-select">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    <select id="teacherSelect" onchange="render()">
-      <option value="zhang">张明远老师</option>
-      <option value="liu">刘思语老师</option>
+  <div class="top-bar-title">课表管理</div>
+  <div class="filter-group">
+    <span>师资姓名/ID：</span>
+    <select id="teacherSelect" onchange="render()" style="min-width:220px;">
+      <option value="zhang">GTH-张明远(Zhang Mingyuan)/175691240266142</option>
+      <option value="liu">GTH-刘思语(Liu Siyu)/175691240289563</option>
     </select>
   </div>
-  <div class="nav-bar">
-    <button class="nav-btn" onclick="navPrev()">&#8249;</button>
-    <span class="nav-label" id="navLabel"></span>
-    <button class="nav-btn" onclick="navNext()">&#8250;</button>
-    <button class="today-btn" onclick="goToday()">今天</button>
+</div>
+
+<!-- 导航 -->
+<div class="nav-row">
+  <div class="view-tabs">
+    <button class="v-tab" onclick="switchView('day')" id="btnDay">按日</button>
+    <button class="v-tab active" onclick="switchView('week')" id="btnWeek">按周</button>
   </div>
-  <div class="view-toggle">
-    <button class="view-btn active" id="btnWeek" onclick="switchView('week')">周视图</button>
-    <button class="view-btn" id="btnDay" onclick="switchView('day')">日视图</button>
+  <div class="nav-group">
+    <button class="nav-btn" onclick="navPrev()">&#8249;</button>
+    <div class="nav-date" id="navLabel"></div>
+    <button class="nav-btn" onclick="navNext()">&#8250;</button>
+    <button class="today-btn" onclick="goToday()">今日</button>
   </div>
 </div>
 
 <!-- 图例 -->
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot fixed"></div>师资固定时间</div>
-  <div class="legend-item"><div class="legend-dot sxy"></div>省心约规则课节</div>
-  <div class="legend-item"><div class="legend-dot oes"></div>OES强制约课</div>
-  <div class="legend-item"><div class="legend-dot free"></div>空闲可约</div>
+<div class="legend-row">
+  <div class="legend-item"><div class="leg-dot blue"></div>可被预约</div>
+  <div class="legend-item"><div class="leg-dot red"></div>省心约课节</div>
+  <div class="legend-item"><div class="leg-dot orange"></div>OES强制约课</div>
 </div>
 
-<!-- 课表区域 -->
-<div class="schedule-wrap">
-  <div id="weekView"></div>
-  <div id="dayView" class="hidden"></div>
-</div>
-
-<!-- 详情弹窗 -->
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="modal-title"><span id="modalTitle">课节详情</span><span class="modal-close" onclick="closeModal()">&#10005;</span></div>
-    <div id="modalBody"></div>
+<!-- 课表 + 详情 -->
+<div class="schedule-container" id="scheduleContainer" style="height:calc(100vh - 140px);overflow:hidden;">
+  <div class="schedule-main" id="scheduleMain" style="overflow-y:auto;">
+    <div id="weekView"></div>
+    <div id="dayView" class="hidden"></div>
+  </div>
+  <div class="detail-panel" id="detailPanel">
+    <div class="dp-inner" id="dpInner"></div>
   </div>
 </div>
 
 <script>
-// ─── 数据 ───
 const START_HOUR = 7, END_HOUR = 24;
 const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
 
 let currentView = 'week';
 let currentWeekStart = getMonday(new Date());
-let currentDayIndex = 0; // 0=周一
+let currentDayIndex = (new Date().getDay() + 6) % 7;
 
 function getMonday(d) {
   const date = new Date(d);
@@ -380,91 +424,76 @@ function getMonday(d) {
   date.setHours(0,0,0,0);
   return date;
 }
-
-function addDays(d, n) {
-  const r = new Date(d);
-  r.setDate(r.getDate() + n);
-  return r;
-}
-
+function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
 function fmt(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
 function fmtFull(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function fmtShort(d) { return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`; }
 
-// Mock 数据
+// ── Mock 数据 ──
 const teacherData = {
   zhang: {
-    name: '张明远',
+    name: '张明远', id: '175691240266142',
     fixed: [
-      // 周一至周五 14:00-21:00
       { day:0, start:'14:00', end:'21:00' },
       { day:1, start:'14:00', end:'21:00' },
       { day:2, start:'14:00', end:'21:00' },
       { day:3, start:'14:00', end:'21:00' },
       { day:4, start:'14:00', end:'21:00' },
-      // 周六日 9:00-18:00
       { day:5, start:'09:00', end:'18:00' },
       { day:6, start:'09:00', end:'18:00' },
     ],
     lessons: [
-      // 省心约课节
-      { id:'SXY20260610001', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260610002', type:'sxy', day:0, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260610003', type:'sxy', day:0, start:'15:30', end:'16:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260610004', type:'sxy', day:0, start:'17:00', end:'17:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
-      { id:'SXY20260610005', type:'sxy', day:0, start:'19:00', end:'19:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260610006', type:'sxy', day:0, start:'19:30', end:'20:00', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260610001', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'15864367001', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson44', classId:'535760197589676001', status:'未开课' },
+      { id:'SXY20260610002', type:'sxy', day:0, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'15864367002', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson12', classId:'535760197589676002', status:'未开课' },
+      { id:'SXY20260610003', type:'sxy', day:0, start:'15:30', end:'16:00', studentName:'陈思琪', studentId:'15864367003', tutor:'李老师', tutorId:'13705851002', courseType:'阶段学-拔高提优', className:'CYLE_L4_Lesson08', classId:'535760197589676003', status:'未开课' },
+      { id:'SXY20260610004', type:'sxy', day:0, start:'17:00', end:'17:30', studentName:'赵一凡', studentId:'15864367004', tutor:'王老师', tutorId:'13705851001', courseType:'同步学', className:'SYNC_L2_Lesson20', classId:'535760197589676004', status:'未开课' },
+      { id:'SXY20260610005', type:'sxy', day:0, start:'19:00', end:'19:30', studentName:'刘佳欣', studentId:'15864367005', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson22', classId:'535760197589676005', status:'未开课' },
+      { id:'SXY20260610006', type:'sxy', day:0, start:'19:30', end:'20:00', studentName:'周子涵', studentId:'15864367006', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson15', classId:'535760197589676006', status:'未开课' },
 
-      { id:'SXY20260611001', type:'sxy', day:1, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260611002', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260611003', type:'sxy', day:1, start:'16:00', end:'16:30', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
-      { id:'SXY20260611004', type:'sxy', day:1, start:'18:30', end:'19:00', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260611005', type:'sxy', day:1, start:'20:00', end:'20:30', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+      { id:'OES80001', type:'oes', day:0, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'15864367010', tutor:'张老师', tutorId:'13705851004', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson44', classId:'535760197589676010', status:'未开课' },
+      { id:'OES80002', type:'oes', day:0, start:'20:30', end:'21:00', studentName:'何雨萱', studentId:'15864367011', tutor:'张老师', tutorId:'13705851004', courseType:'同步学', className:'SYNC_L3_Lesson08', classId:'535760197589676011', status:'未开课' },
 
-      { id:'SXY20260612001', type:'sxy', day:2, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260612002', type:'sxy', day:2, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
-      { id:'SXY20260612003', type:'sxy', day:2, start:'17:30', end:'18:00', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260612004', type:'sxy', day:2, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260612005', type:'sxy', day:2, start:'20:00', end:'20:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260611001', type:'sxy', day:1, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'15864367007', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson33', classId:'535760197589676007', status:'未开课' },
+      { id:'SXY20260611002', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'李小雨', studentId:'15864367001', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson45', classId:'535760197589676012', status:'未开课' },
+      { id:'SXY20260611003', type:'sxy', day:1, start:'16:00', end:'16:30', studentName:'黄思源', studentId:'15864367008', tutor:'李老师', tutorId:'13705851002', courseType:'同步学', className:'SYNC_L2_Lesson15', classId:'535760197589676013', status:'未开课' },
+      { id:'SXY20260611004', type:'sxy', day:1, start:'18:30', end:'19:00', studentName:'吴语桐', studentId:'15864367009', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson20', classId:'535760197589676014', status:'未开课' },
+      { id:'SXY20260611005', type:'sxy', day:1, start:'20:00', end:'20:30', studentName:'陈思琪', studentId:'15864367003', tutor:'李老师', tutorId:'13705851002', courseType:'阶段学-拔高提优', className:'CYLE_L4_Lesson09', classId:'535760197589676015', status:'未开课' },
+      { id:'OES80003', type:'oes', day:1, start:'17:00', end:'17:30', studentName:'马晨阳', studentId:'15864367010', tutor:'张老师', tutorId:'13705851004', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson45', classId:'535760197589676016', status:'未开课' },
 
-      { id:'SXY20260613001', type:'sxy', day:3, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260613002', type:'sxy', day:3, start:'15:00', end:'15:30', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
-      { id:'SXY20260613003', type:'sxy', day:3, start:'17:00', end:'17:30', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260613004', type:'sxy', day:3, start:'19:30', end:'20:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260612001', type:'sxy', day:2, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'15864367002', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson13', classId:'535760197589676017', status:'未开课' },
+      { id:'SXY20260612002', type:'sxy', day:2, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'15864367004', tutor:'王老师', tutorId:'13705851001', courseType:'同步学', className:'SYNC_L2_Lesson21', classId:'535760197589676018', status:'未开课' },
+      { id:'SXY20260612003', type:'sxy', day:2, start:'17:30', end:'18:00', studentName:'刘佳欣', studentId:'15864367005', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson23', classId:'535760197589676019', status:'未开课' },
+      { id:'SXY20260612004', type:'sxy', day:2, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'15864367006', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson16', classId:'535760197589676020', status:'未开课' },
+      { id:'OES80004', type:'oes', day:2, start:'15:00', end:'15:30', studentName:'何雨萱', studentId:'15864367011', tutor:'张老师', tutorId:'13705851004', courseType:'同步学', className:'SYNC_L3_Lesson09', classId:'535760197589676021', status:'未开课' },
 
-      { id:'SXY20260614001', type:'sxy', day:4, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260614002', type:'sxy', day:4, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
-      { id:'SXY20260614003', type:'sxy', day:4, start:'18:00', end:'18:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260614004', type:'sxy', day:4, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260614005', type:'sxy', day:4, start:'20:30', end:'21:00', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260613001', type:'sxy', day:3, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'15864367001', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson46', classId:'535760197589676022', status:'未开课' },
+      { id:'SXY20260613002', type:'sxy', day:3, start:'15:00', end:'15:30', studentName:'黄思源', studentId:'15864367008', tutor:'李老师', tutorId:'13705851002', courseType:'同步学', className:'SYNC_L2_Lesson16', classId:'535760197589676023', status:'未开课' },
+      { id:'SXY20260613003', type:'sxy', day:3, start:'17:00', end:'17:30', studentName:'吴语桐', studentId:'15864367009', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson21', classId:'535760197589676024', status:'未开课' },
+      { id:'SXY20260613004', type:'sxy', day:3, start:'19:30', end:'20:00', studentName:'陈思琪', studentId:'15864367003', tutor:'李老师', tutorId:'13705851002', courseType:'阶段学-拔高提优', className:'CYLE_L4_Lesson10', classId:'535760197589676025', status:'未开课' },
+      { id:'OES80005', type:'oes', day:3, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'15864367010', tutor:'张老师', tutorId:'13705851004', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson46', classId:'535760197589676026', status:'未开课' },
+      { id:'OES80006', type:'oes', day:3, start:'20:00', end:'20:30', studentName:'何雨萱', studentId:'15864367011', tutor:'张老师', tutorId:'13705851004', courseType:'同步学', className:'SYNC_L3_Lesson10', classId:'535760197589676027', status:'未开课' },
 
-      // 周六
-      { id:'SXY20260615001', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260615002', type:'sxy', day:5, start:'09:30', end:'10:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260615003', type:'sxy', day:5, start:'10:30', end:'11:00', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
-      { id:'SXY20260615004', type:'sxy', day:5, start:'14:00', end:'14:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
-      { id:'SXY20260615005', type:'sxy', day:5, start:'15:00', end:'15:30', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260615006', type:'sxy', day:5, start:'16:00', end:'16:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260614001', type:'sxy', day:4, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'15864367002', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson14', classId:'535760197589676028', status:'未开课' },
+      { id:'SXY20260614002', type:'sxy', day:4, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'15864367004', tutor:'王老师', tutorId:'13705851001', courseType:'同步学', className:'SYNC_L2_Lesson22', classId:'535760197589676029', status:'未开课' },
+      { id:'SXY20260614003', type:'sxy', day:4, start:'18:00', end:'18:30', studentName:'刘佳欣', studentId:'15864367005', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson24', classId:'535760197589676030', status:'未开课' },
+      { id:'SXY20260614004', type:'sxy', day:4, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'15864367006', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson17', classId:'535760197589676031', status:'未开课' },
+      { id:'OES80007', type:'oes', day:4, start:'15:00', end:'15:30', studentName:'马晨阳', studentId:'15864367010', tutor:'张老师', tutorId:'13705851004', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson47', classId:'535760197589676032', status:'未开课' },
 
-      // 周日
-      { id:'SXY20260616001', type:'sxy', day:6, start:'09:30', end:'10:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260616002', type:'sxy', day:6, start:'10:30', end:'11:00', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY20260616003', type:'sxy', day:6, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
-      { id:'SXY20260616004', type:'sxy', day:6, start:'15:30', end:'16:00', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260615001', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'李小雨', studentId:'15864367001', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson47', classId:'535760197589676033', status:'未开课' },
+      { id:'SXY20260615002', type:'sxy', day:5, start:'09:30', end:'10:00', studentName:'张文瀚', studentId:'15864367002', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson15', classId:'535760197589676034', status:'未开课' },
+      { id:'SXY20260615003', type:'sxy', day:5, start:'10:30', end:'11:00', studentName:'黄思源', studentId:'15864367008', tutor:'李老师', tutorId:'13705851002', courseType:'同步学', className:'SYNC_L2_Lesson17', classId:'535760197589676035', status:'未开课' },
+      { id:'SXY20260615004', type:'sxy', day:5, start:'14:00', end:'14:30', studentName:'赵一凡', studentId:'15864367004', tutor:'王老师', tutorId:'13705851001', courseType:'同步学', className:'SYNC_L2_Lesson23', classId:'535760197589676036', status:'未开课' },
+      { id:'SXY20260615005', type:'sxy', day:5, start:'15:00', end:'15:30', studentName:'吴语桐', studentId:'15864367009', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson22', classId:'535760197589676037', status:'未开课' },
+      { id:'OES80008', type:'oes', day:5, start:'11:00', end:'11:30', studentName:'何雨萱', studentId:'15864367011', tutor:'张老师', tutorId:'13705851004', courseType:'同步学', className:'SYNC_L3_Lesson11', classId:'535760197589676038', status:'未开课' },
 
-      // OES 强制约课
-      { id:'OES80001', type:'oes', day:0, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
-      { id:'OES80002', type:'oes', day:0, start:'20:30', end:'21:00', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
-      { id:'OES80003', type:'oes', day:1, start:'17:00', end:'17:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
-      { id:'OES80004', type:'oes', day:2, start:'15:00', end:'15:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
-      { id:'OES80005', type:'oes', day:3, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
-      { id:'OES80006', type:'oes', day:3, start:'20:00', end:'20:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
-      { id:'OES80007', type:'oes', day:4, start:'15:00', end:'15:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
-      { id:'OES80008', type:'oes', day:5, start:'11:00', end:'11:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
-      { id:'OES80009', type:'oes', day:6, start:'11:00', end:'11:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260616001', type:'sxy', day:6, start:'09:30', end:'10:00', studentName:'陈思琪', studentId:'15864367003', tutor:'李老师', tutorId:'13705851002', courseType:'阶段学-拔高提优', className:'CYLE_L4_Lesson11', classId:'535760197589676039', status:'未开课' },
+      { id:'SXY20260616002', type:'sxy', day:6, start:'10:30', end:'11:00', studentName:'周子涵', studentId:'15864367006', tutor:'赵老师', tutorId:'13705851003', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson18', classId:'535760197589676040', status:'未开课' },
+      { id:'SXY20260616003', type:'sxy', day:6, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'15864367007', tutor:'王老师', tutorId:'13705851001', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson34', classId:'535760197589676041', status:'未开课' },
+      { id:'OES80009', type:'oes', day:6, start:'11:00', end:'11:30', studentName:'马晨阳', studentId:'15864367010', tutor:'张老师', tutorId:'13705851004', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson48', classId:'535760197589676042', status:'未开课' },
     ]
   },
   liu: {
-    name: '刘思语',
+    name: '刘思语', id: '175691240289563',
     fixed: [
       { day:0, start:'09:00', end:'12:00' },
       { day:0, start:'14:00', end:'18:00' },
@@ -478,31 +507,29 @@ const teacherData = {
       { day:6, start:'09:00', end:'17:00' },
     ],
     lessons: [
-      { id:'SXY30001', type:'sxy', day:0, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
-      { id:'SXY30002', type:'sxy', day:0, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
-      { id:'SXY30003', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY30004', type:'sxy', day:1, start:'09:30', end:'10:00', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
-      { id:'SXY30005', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
-      { id:'OES90001', type:'oes', day:2, start:'14:00', end:'14:30', studentName:'杨天宇', studentId:'STU20010', tutor:'周老师', courseType:'阶段学-补差距' },
-      { id:'OES90002', type:'oes', day:2, start:'16:00', end:'16:30', studentName:'杨天宇', studentId:'STU20010', tutor:'周老师', courseType:'阶段学-补差距' },
-      { id:'SXY30006', type:'sxy', day:3, start:'09:00', end:'09:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
-      { id:'SXY30007', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
-      { id:'SXY30008', type:'sxy', day:5, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
-      { id:'SXY30009', type:'sxy', day:6, start:'10:00', end:'10:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY30001', type:'sxy', day:0, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'15864367020', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson01', classId:'535760197589676050', status:'未开课' },
+      { id:'SXY30002', type:'sxy', day:0, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'15864367021', tutor:'陈老师', tutorId:'13705851010', courseType:'同步学', className:'SYNC_L3_Lesson01', classId:'535760197589676051', status:'未开课' },
+      { id:'SXY30003', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'王子墨', studentId:'15864367022', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson01', classId:'535760197589676052', status:'未开课' },
+      { id:'SXY30004', type:'sxy', day:1, start:'09:30', end:'10:00', studentName:'郑子轩', studentId:'15864367020', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson02', classId:'535760197589676053', status:'未开课' },
+      { id:'SXY30005', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'林雨桐', studentId:'15864367021', tutor:'陈老师', tutorId:'13705851010', courseType:'同步学', className:'SYNC_L3_Lesson02', classId:'535760197589676054', status:'未开课' },
+      { id:'OES90001', type:'oes', day:2, start:'14:00', end:'14:30', studentName:'杨天宇', studentId:'15864367030', tutor:'周老师', tutorId:'13705851011', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson01', classId:'535760197589676055', status:'未开课' },
+      { id:'OES90002', type:'oes', day:2, start:'16:00', end:'16:30', studentName:'杨天宇', studentId:'15864367030', tutor:'周老师', tutorId:'13705851011', courseType:'阶段学-补差距', className:'CYLE_L3_Lesson02', classId:'535760197589676056', status:'未开课' },
+      { id:'SXY30006', type:'sxy', day:3, start:'09:00', end:'09:30', studentName:'王子墨', studentId:'15864367022', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson02', classId:'535760197589676057', status:'未开课' },
+      { id:'SXY30007', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'15864367020', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-补差距', className:'CYLE_L2_Lesson03', classId:'535760197589676058', status:'未开课' },
+      { id:'SXY30008', type:'sxy', day:5, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'15864367021', tutor:'陈老师', tutorId:'13705851010', courseType:'同步学', className:'SYNC_L3_Lesson03', classId:'535760197589676059', status:'未开课' },
+      { id:'SXY30009', type:'sxy', day:6, start:'10:00', end:'10:30', studentName:'王子墨', studentId:'15864367022', tutor:'陈老师', tutorId:'13705851010', courseType:'阶段学-拔高提优', className:'CYLE_L5_Lesson03', classId:'535760197589676060', status:'未开课' },
     ]
   }
 };
 
-// ─── 工具函数 ───
+// ── 工具 ──
 function timeToSlot(t) {
   const [h,m] = t.split(':').map(Number);
   return (h - START_HOUR) * 2 + (m >= 30 ? 1 : 0);
 }
-function slotToY(slot, cellH) { return slot * cellH; }
-function slotHeight(start, end, cellH) { return (timeToSlot(end) - timeToSlot(start)) * cellH; }
 
-// ─── 渲染 ───
 function render() {
+  closePanel();
   if (currentView === 'week') renderWeek();
   else renderDay();
   updateNavLabel();
@@ -510,120 +537,151 @@ function render() {
 
 function renderWeek() {
   const teacher = teacherData[document.getElementById('teacherSelect').value];
-  const cellH = 40;
+  const cellH = 50;
   const totalSlots = (END_HOUR - START_HOUR) * 2;
-  const totalH = totalSlots * cellH;
 
-  // 构建 table
-  let html = '<table class="week-table"><thead><tr><th></th>';
+  let html = '<table class="cal-table"><thead><tr><th>时间</th>';
   for (let d = 0; d < 7; d++) {
     const date = addDays(currentWeekStart, d);
     const isToday = fmtFull(date) === fmtFull(new Date());
-    html += `<th${isToday?' class="today"':''}><div class="day-name">${DAYS[d]}</div>${fmt(date)}</th>`;
+    html += `<th${isToday?' class="today"':''}><span class="th-date">${date.getDate()}</span> <span class="th-day">${DAYS[d]}</span></th>`;
   }
   html += '</tr></thead><tbody>';
 
   for (let s = 0; s < totalSlots; s++) {
     const h = START_HOUR + Math.floor(s / 2);
     const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
-    const halfClass = (s % 2 !== 0) ? ' class="half-row"' : '';
-    html += `<tr${halfClass}><td class="time-col">${label}</td>`;
+    html += `<tr${s%2!==0?' class="half"':''}><td>${label}</td>`;
     for (let d = 0; d < 7; d++) {
-      html += `<td class="day-cell"></td>`;
+      html += '<td class="day-td" data-day="' + d + '" data-slot="' + s + '"></td>';
     }
     html += '</tr>';
   }
   html += '</tbody></table>';
 
-  // Overlay层，放在table上方用于绝对定位课节块
-  html += '<div id="weekOverlay" style="position:relative;margin-top:-' + totalH + 'px;height:' + totalH + 'px;margin-left:60px;pointer-events:none;">';
-  html += '</div>';
-
   const container = document.getElementById('weekView');
   container.innerHTML = html;
 
-  // 获取实际列宽
-  const table = container.querySelector('.week-table');
-  const headerCells = table.querySelectorAll('thead th');
-  const overlay = document.getElementById('weekOverlay');
-  const overlayW = overlay.offsetWidth;
-  const colW = overlayW / 7;
+  // 用 JS 后插入每列的 wrapper + 课节
+  // 找到每天第一行的 td 来获取位置
+  const table = container.querySelector('.cal-table');
 
   for (let d = 0; d < 7; d++) {
-    // 固定时间
+    const firstTd = table.querySelector(`td[data-day="${d}"][data-slot="0"]`);
+    if (!firstTd) continue;
+
+    // 创建 wrapper 放在 firstTd 内，跨越整个列高
+    const wrap = document.createElement('div');
+    wrap.style.cssText = `position:absolute;top:0;left:0;right:0;height:${totalSlots * cellH}px;pointer-events:none;`;
+    firstTd.style.position = 'relative';
+    firstTd.style.overflow = 'visible';
+    firstTd.appendChild(wrap);
+
+    // 固定时间段
     teacher.fixed.filter(f => f.day === d).forEach(f => {
-      const startSlot = timeToSlot(f.start);
-      const endSlot = timeToSlot(f.end);
-      const el = document.createElement('div');
-      el.className = 'slot fixed';
-      el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:${d*colW+2}px;width:${colW-4}px;z-index:1;pointer-events:auto;`;
-      el.innerHTML = '<div class="slot-title" style="text-align:center;font-size:10px;opacity:0.6;margin-top:4px;">固定时间</div>';
-      overlay.appendChild(el);
+      const ss = timeToSlot(f.start), es = timeToSlot(f.end);
+      // 把固定时间段拆分成空闲段（不含已排课的部分）
+      const occupiedSlots = teacher.lessons.filter(l => l.day === d).map(l => [timeToSlot(l.start), timeToSlot(l.end)]);
+      // 遍历固定时间段内每个半小时
+      for (let slot = ss; slot < es; slot++) {
+        const isOccupied = occupiedSlots.some(([os, oe]) => slot >= os && slot < oe);
+        if (!isOccupied) {
+          // 合并连续空闲slot
+          let endSlot = slot + 1;
+          while (endSlot < es && !occupiedSlots.some(([os, oe]) => endSlot >= os && endSlot < oe)) {
+            endSlot++;
+          }
+          const el = createEntry('fixed', slot, endSlot, cellH, {
+            time: slotToTime(slot) + ' - ' + slotToTime(endSlot),
+            desc: '可被预约时间'
+          });
+          wrap.appendChild(el);
+          slot = endSlot - 1;
+        }
+      }
     });
 
     // 课节
     teacher.lessons.filter(l => l.day === d).forEach(l => {
-      const startSlot = timeToSlot(l.start);
-      const endSlot = timeToSlot(l.end);
-      const el = document.createElement('div');
-      el.className = `slot ${l.type}`;
-      el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:${d*colW+2}px;width:${colW-4}px;z-index:2;pointer-events:auto;`;
-      el.innerHTML = `<div class="slot-title">${l.studentName}</div><div class="slot-info">${l.start}-${l.end} ${l.type==='oes'?'OES':'省心约'}</div>`;
-      el.onclick = () => showModal(l);
-      overlay.appendChild(el);
+      const ss = timeToSlot(l.start), es = timeToSlot(l.end);
+      const el = createEntry(l.type, ss, es, cellH, {
+        time: l.start + ' - ' + l.end,
+        desc: l.className
+      });
+      el.style.pointerEvents = 'auto';
+      el.onclick = () => showPanel(l, d);
+      wrap.appendChild(el);
     });
   }
+}
+
+function createEntry(type, startSlot, endSlot, cellH, data) {
+  const el = document.createElement('div');
+  el.className = `entry ${type}`;
+  el.style.cssText = `position:absolute;top:${startSlot * cellH}px;height:${(endSlot - startSlot) * cellH - 2}px;left:3px;right:3px;pointer-events:auto;`;
+  el.innerHTML = `<div><span class="e-dot"></span><span class="e-time">${data.time}</span></div><div class="e-desc">${data.desc}</div>`;
+  return el;
+}
+
+function slotToTime(slot) {
+  const h = START_HOUR + Math.floor(slot / 2);
+  const m = (slot % 2 === 0) ? '00' : '30';
+  return `${String(h).padStart(2,'0')}:${m}`;
 }
 
 function renderDay() {
   const teacher = teacherData[document.getElementById('teacherSelect').value];
   const cellH = 60;
   const totalSlots = (END_HOUR - START_HOUR) * 2;
-  const totalH = totalSlots * cellH;
   const d = currentDayIndex;
 
-  let html = '<table class="day-table"><tbody>';
+  let html = '<table class="day-cal-table"><tbody>';
   for (let s = 0; s < totalSlots; s++) {
     const h = START_HOUR + Math.floor(s / 2);
     const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
-    const halfClass = (s % 2 !== 0) ? ' class="half-row"' : '';
-    html += `<tr${halfClass}><td class="time-col">${label}</td><td class="day-cell"></td></tr>`;
+    html += `<tr${s%2!==0?' class="half"':''}><td>${label}</td><td data-slot="${s}"></td></tr>`;
   }
   html += '</tbody></table>';
-  html += `<div id="dayOverlay" style="position:relative;margin-top:-${totalH}px;height:${totalH}px;margin-left:60px;pointer-events:none;"></div>`;
 
   const container = document.getElementById('dayView');
   container.innerHTML = html;
 
-  const overlay = document.getElementById('dayOverlay');
+  const firstTd = container.querySelector('td[data-slot="0"]:last-child');
+  if (!firstTd) return;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = `position:absolute;top:0;left:0;right:0;height:${totalSlots * cellH}px;`;
+  firstTd.style.position = 'relative';
+  firstTd.style.overflow = 'visible';
+  firstTd.appendChild(wrap);
 
   // 固定时间
+  const occupiedSlots = teacher.lessons.filter(l => l.day === d).map(l => [timeToSlot(l.start), timeToSlot(l.end)]);
   teacher.fixed.filter(f => f.day === d).forEach(f => {
-    const startSlot = timeToSlot(f.start);
-    const endSlot = timeToSlot(f.end);
-    const el = document.createElement('div');
-    el.className = 'day-slot fixed';
-    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;display:flex;align-items:center;justify-content:center;z-index:1;pointer-events:auto;`;
-    el.innerHTML = '<div style="font-size:12px;opacity:0.5;">师资固定时间</div>';
-    overlay.appendChild(el);
+    const ss = timeToSlot(f.start), es = timeToSlot(f.end);
+    for (let slot = ss; slot < es; slot++) {
+      const isOccupied = occupiedSlots.some(([os, oe]) => slot >= os && slot < oe);
+      if (!isOccupied) {
+        let endSlot = slot + 1;
+        while (endSlot < es && !occupiedSlots.some(([os, oe]) => endSlot >= os && endSlot < oe)) endSlot++;
+        const el = document.createElement('div');
+        el.className = 'day-entry fixed';
+        el.style.cssText = `position:absolute;top:${slot*cellH}px;height:${(endSlot-slot)*cellH-2}px;left:4px;right:4px;display:flex;align-items:center;`;
+        el.innerHTML = `<div><div class="de-time">${slotToTime(slot)} - ${slotToTime(endSlot)}</div><div class="de-info">可被预约时间</div></div>`;
+        wrap.appendChild(el);
+        slot = endSlot - 1;
+      }
+    }
   });
 
   // 课节
   teacher.lessons.filter(l => l.day === d).forEach(l => {
-    const startSlot = timeToSlot(l.start);
-    const endSlot = timeToSlot(l.end);
+    const ss = timeToSlot(l.start), es = timeToSlot(l.end);
     const el = document.createElement('div');
-    el.className = `day-slot ${l.type}`;
-    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;z-index:2;pointer-events:auto;`;
-    el.innerHTML = `
-      <div class="ds-row">
-        <span class="ds-name">${l.studentName}</span>
-        <span class="ds-tag">${l.type==='oes'?'OES':'省心约'}</span>
-      </div>
-      <div class="ds-detail">${l.start}-${l.end} | ${l.courseType} | ${l.tutor} | #${l.id}</div>
-    `;
-    el.onclick = () => showModal(l);
-    overlay.appendChild(el);
+    el.className = `day-entry ${l.type}`;
+    el.style.cssText = `position:absolute;top:${ss*cellH}px;height:${(es-ss)*cellH-2}px;left:4px;right:4px;`;
+    el.innerHTML = `<div class="de-name">${l.studentName}</div><div class="de-time">${l.start} - ${l.end} | ${l.type==='oes'?'OES':'省心约'}</div><div class="de-info">${l.className} | ${l.tutor}</div>`;
+    el.onclick = () => showPanel(l, d);
+    wrap.appendChild(el);
   });
 }
 
@@ -631,7 +689,7 @@ function updateNavLabel() {
   const label = document.getElementById('navLabel');
   if (currentView === 'week') {
     const end = addDays(currentWeekStart, 6);
-    label.textContent = `${fmtFull(currentWeekStart)} ~ ${fmtFull(end)}`;
+    label.textContent = `${fmtShort(currentWeekStart)}-${fmtShort(end)}`;
   } else {
     const date = addDays(currentWeekStart, currentDayIndex);
     label.textContent = `${fmtFull(date)} ${DAYS[currentDayIndex]}`;
@@ -639,70 +697,61 @@ function updateNavLabel() {
 }
 
 function navPrev() {
-  if (currentView === 'week') {
-    currentWeekStart = addDays(currentWeekStart, -7);
-  } else {
-    if (currentDayIndex === 0) {
-      currentWeekStart = addDays(currentWeekStart, -7);
-      currentDayIndex = 6;
-    } else {
-      currentDayIndex--;
-    }
-  }
+  if (currentView === 'week') currentWeekStart = addDays(currentWeekStart, -7);
+  else { if (currentDayIndex === 0) { currentWeekStart = addDays(currentWeekStart, -7); currentDayIndex = 6; } else currentDayIndex--; }
   render();
 }
-
 function navNext() {
-  if (currentView === 'week') {
-    currentWeekStart = addDays(currentWeekStart, 7);
-  } else {
-    if (currentDayIndex === 6) {
-      currentWeekStart = addDays(currentWeekStart, 7);
-      currentDayIndex = 0;
-    } else {
-      currentDayIndex++;
-    }
-  }
+  if (currentView === 'week') currentWeekStart = addDays(currentWeekStart, 7);
+  else { if (currentDayIndex === 6) { currentWeekStart = addDays(currentWeekStart, 7); currentDayIndex = 0; } else currentDayIndex++; }
   render();
 }
-
 function goToday() {
   currentWeekStart = getMonday(new Date());
-  currentDayIndex = (new Date().getDay() + 6) % 7; // 0=周一
+  currentDayIndex = (new Date().getDay() + 6) % 7;
   render();
 }
-
 function switchView(v) {
   currentView = v;
   document.getElementById('btnWeek').classList.toggle('active', v==='week');
   document.getElementById('btnDay').classList.toggle('active', v==='day');
   document.getElementById('weekView').classList.toggle('hidden', v!=='week');
   document.getElementById('dayView').classList.toggle('hidden', v!=='day');
-  if (v === 'day' && currentDayIndex === undefined) currentDayIndex = 0;
   render();
 }
 
-function showModal(lesson) {
-  document.getElementById('modalTitle').textContent = '课节详情';
-  const tagClass = lesson.type === 'oes' ? 'oes' : 'sxy';
-  const tagLabel = lesson.type === 'oes' ? 'OES强制约课' : '省心约规则';
-  document.getElementById('modalBody').innerHTML = `
-    <div class="modal-row"><div class="modal-label">课节ID</div><div class="modal-value">${lesson.id}</div></div>
-    <div class="modal-row"><div class="modal-label">学员ID</div><div class="modal-value">${lesson.studentId}</div></div>
-    <div class="modal-row"><div class="modal-label">学员姓名</div><div class="modal-value">${lesson.studentName}</div></div>
-    <div class="modal-row"><div class="modal-label">上课时间</div><div class="modal-value">${lesson.start} - ${lesson.end}</div></div>
-    <div class="modal-row"><div class="modal-label">来源系统</div><div class="modal-value"><span class="modal-tag ${tagClass}">${tagLabel}</span></div></div>
-    <div class="modal-row"><div class="modal-label">二讲老师</div><div class="modal-value">${lesson.tutor}</div></div>
-    <div class="modal-row"><div class="modal-label">课程类型</div><div class="modal-value">${lesson.courseType}</div></div>
+function showPanel(lesson, dayIndex) {
+  const panel = document.getElementById('detailPanel');
+  const date = addDays(currentWeekStart, dayIndex);
+  const typeLabel = lesson.type === 'oes' ? 'OES强制约课' : '省心约规则';
+  const headerClass = lesson.type === 'oes' ? 'oes' : 'sxy';
+
+  document.getElementById('dpInner').innerHTML = `
+    <div class="dp-header ${headerClass}">
+      <div class="dp-close" onclick="closePanel()">&times;</div>
+      <div class="dp-status">${lesson.status || '未开课'}</div>
+      <div class="dp-time">${fmtFull(date)}（${DAYS[dayIndex]}）${lesson.start}-${lesson.end}</div>
+    </div>
+    <div class="dp-body">
+      <div class="dp-row"><div class="dp-label">主讲老师</div><div class="dp-value">GTH-${teacherData[document.getElementById('teacherSelect').value].name}</div></div>
+      <div class="dp-row"><div class="dp-label">学员名称</div><div class="dp-value">${lesson.studentName}</div></div>
+      <div class="dp-row"><div class="dp-label">学员ID</div><div class="dp-value">${lesson.studentId}</div></div>
+      <div class="dp-row"><div class="dp-label">二讲老师</div><div class="dp-value">${lesson.tutor}（${lesson.tutorId}）</div></div>
+      <div class="dp-row"><div class="dp-label">课程类型</div><div class="dp-value">${lesson.courseType}</div></div>
+      <div class="dp-row"><div class="dp-label">课节名称</div><div class="dp-value">${lesson.className}</div></div>
+      <div class="dp-row"><div class="dp-label">课节ID</div><div class="dp-value">${lesson.id}</div></div>
+      <div class="dp-row"><div class="dp-label">班级ID</div><div class="dp-value">${lesson.classId}</div></div>
+      <div class="dp-row"><div class="dp-label">来源系统</div><div class="dp-value">${typeLabel}</div></div>
+      <div class="dp-row"><div class="dp-label">课节类型</div><div class="dp-value">直播课，正式课节</div></div>
+    </div>
   `;
-  document.getElementById('modal').classList.add('show');
+  panel.classList.add('open');
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('show');
+function closePanel() {
+  document.getElementById('detailPanel').classList.remove('open');
 }
 
-// 初始化
 render();
 </script>
 </body>
