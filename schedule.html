@@ -390,6 +390,7 @@ body {
 
 <!-- 图例 -->
 <div class="legend-row">
+  <div class="legend-item"><div class="leg-dot" style="width:14px;height:14px;border-radius:3px;background:#f0f7ff;border:1px solid #91caff;"></div>师资固定时间</div>
   <div class="legend-item"><div class="leg-dot blue"></div>可被预约</div>
   <div class="legend-item"><div class="leg-dot red"></div>省心约课节</div>
   <div class="legend-item"><div class="leg-dot orange"></div>OES强制约课</div>
@@ -575,16 +576,21 @@ function renderWeek() {
     firstTd.style.overflow = 'visible';
     firstTd.appendChild(wrap);
 
-    // 固定时间段
+    // 1. 先画固定时间段的整体背景
     teacher.fixed.filter(f => f.day === d).forEach(f => {
       const ss = timeToSlot(f.start), es = timeToSlot(f.end);
-      // 把固定时间段拆分成空闲段（不含已排课的部分）
+      const bg = document.createElement('div');
+      bg.style.cssText = `position:absolute;top:${ss*cellH}px;height:${(es-ss)*cellH}px;left:0;right:0;background:#f0f7ff;border-left:3px solid #91caff;z-index:0;`;
+      wrap.appendChild(bg);
+    });
+
+    // 2. 固定时间段内的空闲可约段
+    teacher.fixed.filter(f => f.day === d).forEach(f => {
+      const ss = timeToSlot(f.start), es = timeToSlot(f.end);
       const occupiedSlots = teacher.lessons.filter(l => l.day === d).map(l => [timeToSlot(l.start), timeToSlot(l.end)]);
-      // 遍历固定时间段内每个半小时
       for (let slot = ss; slot < es; slot++) {
         const isOccupied = occupiedSlots.some(([os, oe]) => slot >= os && slot < oe);
         if (!isOccupied) {
-          // 合并连续空闲slot
           let endSlot = slot + 1;
           while (endSlot < es && !occupiedSlots.some(([os, oe]) => endSlot >= os && endSlot < oe)) {
             endSlot++;
@@ -652,7 +658,15 @@ function renderDay() {
   firstTd.style.overflow = 'visible';
   firstTd.appendChild(wrap);
 
-  // 固定时间
+  // 固定时间背景
+  teacher.fixed.filter(f => f.day === d).forEach(f => {
+    const ss = timeToSlot(f.start), es = timeToSlot(f.end);
+    const bg = document.createElement('div');
+    bg.style.cssText = `position:absolute;top:${ss*cellH}px;height:${(es-ss)*cellH}px;left:0;right:0;background:#f0f7ff;border-left:3px solid #91caff;z-index:0;`;
+    wrap.appendChild(bg);
+  });
+
+  // 固定时间内空闲段
   const occupiedSlots = teacher.lessons.filter(l => l.day === d).map(l => [timeToSlot(l.start), timeToSlot(l.end)]);
   teacher.fixed.filter(f => f.day === d).forEach(f => {
     const ss = timeToSlot(f.start), es = timeToSlot(f.end);
