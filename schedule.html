@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>主讲老师课表查看</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background: #f0f2f5;
+  color: #1a1a1a;
+  font-size: 14px;
+}
+
+/* 顶部栏 */
+.top-bar {
+  background: #fff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-wrap: wrap;
+}
+.top-bar-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-right: 8px;
+}
+.teacher-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+.teacher-select:hover { border-color: #1677ff; }
+.teacher-select select {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+
+.view-toggle {
+  display: flex;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-left: auto;
+}
+.view-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.15s;
+}
+.view-btn.active {
+  background: #1677ff;
+  color: #fff;
+}
+.view-btn:hover:not(.active) { background: #f5f5f5; }
+
+.nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-btn {
+  width: 30px; height: 30px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.nav-btn:hover { border-color: #1677ff; color: #1677ff; }
+.nav-label {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 180px;
+  text-align: center;
+}
+.today-btn {
+  padding: 4px 12px;
+  border: 1px solid #1677ff;
+  border-radius: 6px;
+  background: #fff;
+  color: #1677ff;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.today-btn:hover { background: #1677ff; color: #fff; }
+
+/* 图例 */
+.legend {
+  display: flex;
+  gap: 20px;
+  padding: 10px 24px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+}
+.legend-dot {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.legend-dot.fixed { background: #e6f4ff; border: 1px solid #91caff; }
+.legend-dot.sxy { background: #f6ffed; border: 1px solid #b7eb8f; }
+.legend-dot.oes { background: #fff7e6; border: 1px solid #ffd591; }
+.legend-dot.free { background: #fff; border: 1px dashed #d9d9d9; }
+
+/* 课表容器 */
+.schedule-wrap {
+  padding: 16px 24px;
+  overflow-x: auto;
+}
+
+/* 周视图 */
+.week-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(7, 1fr);
+  min-width: 900px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.week-header {
+  background: #fafafa;
+  padding: 10px 4px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  border-right: 1px solid #f0f0f0;
+}
+.week-header:first-child { background: #fafafa; }
+.week-header .day-name { color: #999; font-weight: 400; font-size: 12px; }
+.week-header.today { color: #1677ff; }
+.week-header.today .day-name { color: #1677ff; }
+
+.time-label {
+  padding: 0 6px;
+  font-size: 11px;
+  color: #bbb;
+  text-align: right;
+  border-right: 1px solid #f0f0f0;
+  position: relative;
+  height: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-top: 2px;
+}
+.time-label span { transform: translateY(-50%); }
+
+.day-col {
+  position: relative;
+  border-right: 1px solid #f5f5f5;
+  height: 40px;
+  border-bottom: 1px solid #f8f8f8;
+}
+.day-col.half { border-bottom: 1px dashed #f5f5f5; }
+
+/* 课节块 */
+.slot {
+  position: absolute;
+  left: 2px; right: 2px;
+  border-radius: 4px;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 1.3;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 2;
+  transition: box-shadow 0.15s;
+}
+.slot:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 5;
+}
+.slot.fixed {
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  color: #0958d9;
+}
+.slot.sxy {
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+  color: #389e0d;
+}
+.slot.oes {
+  background: #fff7e6;
+  border: 1px solid #ffd591;
+  color: #d46b08;
+}
+.slot.free {
+  background: rgba(255,255,255,0.6);
+  border: 1px dashed #d9d9d9;
+  color: #bbb;
+  font-style: italic;
+}
+.slot-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot-info { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; font-size: 10px; }
+
+/* 日视图 */
+.day-grid {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  min-width: 400px;
+  max-width: 700px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+.day-grid .time-label {
+  height: 60px;
+}
+.day-detail-col {
+  position: relative;
+  border-bottom: 1px solid #f8f8f8;
+  height: 60px;
+}
+.day-detail-col.half { border-bottom: 1px dashed #f5f5f5; }
+.day-slot {
+  position: absolute;
+  left: 4px; right: 4px;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  cursor: pointer;
+  z-index: 2;
+  transition: box-shadow 0.15s;
+}
+.day-slot:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 5; }
+.day-slot.fixed { background: #e6f4ff; border: 1px solid #91caff; color: #0958d9; }
+.day-slot.sxy { background: #f6ffed; border: 1px solid #b7eb8f; color: #389e0d; }
+.day-slot.oes { background: #fff7e6; border: 1px solid #ffd591; color: #d46b08; }
+.day-slot.free { background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; color: #bbb; }
+.day-slot .ds-row { display: flex; justify-content: space-between; align-items: center; }
+.day-slot .ds-name { font-weight: 700; font-size: 14px; }
+.day-slot .ds-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.day-slot.sxy .ds-tag { background: #d9f7be; color: #389e0d; }
+.day-slot.oes .ds-tag { background: #ffe7ba; color: #d46b08; }
+.day-slot .ds-detail { font-size: 11px; opacity: 0.8; margin-top: 2px; }
+
+/* 弹窗 */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  min-width: 340px;
+  max-width: 420px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.modal-close { cursor: pointer; color: #999; font-size: 18px; }
+.modal-close:hover { color: #333; }
+.modal-row { display: flex; padding: 6px 0; font-size: 13px; }
+.modal-label { color: #999; width: 80px; flex-shrink: 0; }
+.modal-value { color: #1a1a1a; font-weight: 500; }
+.modal-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.modal-tag.sxy { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+.modal-tag.oes { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- 顶部栏 -->
+<div class="top-bar">
+  <div class="top-bar-title">主讲老师课表</div>
+  <div class="teacher-select">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <select id="teacherSelect" onchange="render()">
+      <option value="zhang">张明远老师</option>
+      <option value="liu">刘思语老师</option>
+    </select>
+  </div>
+  <div class="nav-bar">
+    <button class="nav-btn" onclick="navPrev()">&#8249;</button>
+    <span class="nav-label" id="navLabel"></span>
+    <button class="nav-btn" onclick="navNext()">&#8250;</button>
+    <button class="today-btn" onclick="goToday()">今天</button>
+  </div>
+  <div class="view-toggle">
+    <button class="view-btn active" id="btnWeek" onclick="switchView('week')">周视图</button>
+    <button class="view-btn" id="btnDay" onclick="switchView('day')">日视图</button>
+  </div>
+</div>
+
+<!-- 图例 -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot fixed"></div>师资固定时间</div>
+  <div class="legend-item"><div class="legend-dot sxy"></div>省心约规则课节</div>
+  <div class="legend-item"><div class="legend-dot oes"></div>OES强制约课</div>
+  <div class="legend-item"><div class="legend-dot free"></div>空闲可约</div>
+</div>
+
+<!-- 课表区域 -->
+<div class="schedule-wrap">
+  <div id="weekView"></div>
+  <div id="dayView" class="hidden"></div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title"><span id="modalTitle">课节详情</span><span class="modal-close" onclick="closeModal()">&#10005;</span></div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ─── 数据 ───
+const START_HOUR = 6, END_HOUR = 23;
+const DAYS = ['周一','周二','周三','周四','周五','周六','周日'];
+
+let currentView = 'week';
+let currentWeekStart = getMonday(new Date());
+let currentDayIndex = 0; // 0=周一
+
+function getMonday(d) {
+  const date = new Date(d);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+  date.setDate(diff);
+  date.setHours(0,0,0,0);
+  return date;
+}
+
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function fmt(d) { return `${d.getMonth()+1}/${d.getDate()}`; }
+function fmtFull(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+// Mock 数据
+const teacherData = {
+  zhang: {
+    name: '张明远',
+    fixed: [
+      // 周一至周五 14:00-21:00
+      { day:0, start:'14:00', end:'21:00' },
+      { day:1, start:'14:00', end:'21:00' },
+      { day:2, start:'14:00', end:'21:00' },
+      { day:3, start:'14:00', end:'21:00' },
+      { day:4, start:'14:00', end:'21:00' },
+      // 周六日 9:00-18:00
+      { day:5, start:'09:00', end:'18:00' },
+      { day:6, start:'09:00', end:'18:00' },
+    ],
+    lessons: [
+      // 省心约课节
+      { id:'SXY20260610001', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260610002', type:'sxy', day:0, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260610003', type:'sxy', day:0, start:'15:30', end:'16:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260610004', type:'sxy', day:0, start:'17:00', end:'17:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
+      { id:'SXY20260610005', type:'sxy', day:0, start:'19:00', end:'19:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260610006', type:'sxy', day:0, start:'19:30', end:'20:00', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+
+      { id:'SXY20260611001', type:'sxy', day:1, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260611002', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260611003', type:'sxy', day:1, start:'16:00', end:'16:30', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
+      { id:'SXY20260611004', type:'sxy', day:1, start:'18:30', end:'19:00', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260611005', type:'sxy', day:1, start:'20:00', end:'20:30', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+
+      { id:'SXY20260612001', type:'sxy', day:2, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260612002', type:'sxy', day:2, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
+      { id:'SXY20260612003', type:'sxy', day:2, start:'17:30', end:'18:00', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260612004', type:'sxy', day:2, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260612005', type:'sxy', day:2, start:'20:00', end:'20:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+
+      { id:'SXY20260613001', type:'sxy', day:3, start:'14:00', end:'14:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260613002', type:'sxy', day:3, start:'15:00', end:'15:30', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
+      { id:'SXY20260613003', type:'sxy', day:3, start:'17:00', end:'17:30', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260613004', type:'sxy', day:3, start:'19:30', end:'20:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+
+      { id:'SXY20260614001', type:'sxy', day:4, start:'14:30', end:'15:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260614002', type:'sxy', day:4, start:'16:00', end:'16:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
+      { id:'SXY20260614003', type:'sxy', day:4, start:'18:00', end:'18:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260614004', type:'sxy', day:4, start:'19:00', end:'19:30', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260614005', type:'sxy', day:4, start:'20:30', end:'21:00', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+
+      // 周六
+      { id:'SXY20260615001', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260615002', type:'sxy', day:5, start:'09:30', end:'10:00', studentName:'张文瀚', studentId:'STU10189', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260615003', type:'sxy', day:5, start:'10:30', end:'11:00', studentName:'黄思源', studentId:'STU10678', tutor:'李老师', courseType:'同步学' },
+      { id:'SXY20260615004', type:'sxy', day:5, start:'14:00', end:'14:30', studentName:'赵一凡', studentId:'STU10045', tutor:'王老师', courseType:'同步学' },
+      { id:'SXY20260615005', type:'sxy', day:5, start:'15:00', end:'15:30', studentName:'吴语桐', studentId:'STU10789', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260615006', type:'sxy', day:5, start:'16:00', end:'16:30', studentName:'刘佳欣', studentId:'STU10422', tutor:'赵老师', courseType:'阶段学-补差距' },
+
+      // 周日
+      { id:'SXY20260616001', type:'sxy', day:6, start:'09:30', end:'10:00', studentName:'陈思琪', studentId:'STU10301', tutor:'李老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260616002', type:'sxy', day:6, start:'10:30', end:'11:00', studentName:'周子涵', studentId:'STU10133', tutor:'赵老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY20260616003', type:'sxy', day:6, start:'14:00', end:'14:30', studentName:'孙悦然', studentId:'STU10556', tutor:'王老师', courseType:'阶段学-补差距' },
+      { id:'SXY20260616004', type:'sxy', day:6, start:'15:30', end:'16:00', studentName:'李小雨', studentId:'STU10234', tutor:'王老师', courseType:'阶段学-补差距' },
+
+      // OES 强制约课
+      { id:'OES80001', type:'oes', day:0, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+      { id:'OES80002', type:'oes', day:0, start:'20:30', end:'21:00', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
+      { id:'OES80003', type:'oes', day:1, start:'17:00', end:'17:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+      { id:'OES80004', type:'oes', day:2, start:'15:00', end:'15:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
+      { id:'OES80005', type:'oes', day:3, start:'16:00', end:'16:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+      { id:'OES80006', type:'oes', day:3, start:'20:00', end:'20:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
+      { id:'OES80007', type:'oes', day:4, start:'15:00', end:'15:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+      { id:'OES80008', type:'oes', day:5, start:'11:00', end:'11:30', studentName:'何雨萱', studentId:'STU10912', tutor:'张老师', courseType:'同步学' },
+      { id:'OES80009', type:'oes', day:6, start:'11:00', end:'11:30', studentName:'马晨阳', studentId:'STU10890', tutor:'张老师', courseType:'阶段学-补差距' },
+    ]
+  },
+  liu: {
+    name: '刘思语',
+    fixed: [
+      { day:0, start:'09:00', end:'12:00' },
+      { day:0, start:'14:00', end:'18:00' },
+      { day:1, start:'09:00', end:'12:00' },
+      { day:1, start:'14:00', end:'18:00' },
+      { day:2, start:'14:00', end:'20:00' },
+      { day:3, start:'09:00', end:'12:00' },
+      { day:3, start:'14:00', end:'18:00' },
+      { day:4, start:'14:00', end:'20:00' },
+      { day:5, start:'09:00', end:'17:00' },
+      { day:6, start:'09:00', end:'17:00' },
+    ],
+    lessons: [
+      { id:'SXY30001', type:'sxy', day:0, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
+      { id:'SXY30002', type:'sxy', day:0, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
+      { id:'SXY30003', type:'sxy', day:0, start:'14:00', end:'14:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY30004', type:'sxy', day:1, start:'09:30', end:'10:00', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
+      { id:'SXY30005', type:'sxy', day:1, start:'15:00', end:'15:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
+      { id:'OES90001', type:'oes', day:2, start:'14:00', end:'14:30', studentName:'杨天宇', studentId:'STU20010', tutor:'周老师', courseType:'阶段学-补差距' },
+      { id:'OES90002', type:'oes', day:2, start:'16:00', end:'16:30', studentName:'杨天宇', studentId:'STU20010', tutor:'周老师', courseType:'阶段学-补差距' },
+      { id:'SXY30006', type:'sxy', day:3, start:'09:00', end:'09:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
+      { id:'SXY30007', type:'sxy', day:5, start:'09:00', end:'09:30', studentName:'郑子轩', studentId:'STU20001', tutor:'陈老师', courseType:'阶段学-补差距' },
+      { id:'SXY30008', type:'sxy', day:5, start:'10:00', end:'10:30', studentName:'林雨桐', studentId:'STU20002', tutor:'陈老师', courseType:'同步学' },
+      { id:'SXY30009', type:'sxy', day:6, start:'10:00', end:'10:30', studentName:'王子墨', studentId:'STU20003', tutor:'陈老师', courseType:'阶段学-拔高提优' },
+    ]
+  }
+};
+
+// ─── 工具函数 ───
+function timeToSlot(t) {
+  const [h,m] = t.split(':').map(Number);
+  return (h - START_HOUR) * 2 + (m >= 30 ? 1 : 0);
+}
+function slotToY(slot, cellH) { return slot * cellH; }
+function slotHeight(start, end, cellH) { return (timeToSlot(end) - timeToSlot(start)) * cellH; }
+
+// ─── 渲染 ───
+function render() {
+  if (currentView === 'week') renderWeek();
+  else renderDay();
+  updateNavLabel();
+}
+
+function renderWeek() {
+  const teacher = teacherData[document.getElementById('teacherSelect').value];
+  const cellH = 40;
+  const totalSlots = (END_HOUR - START_HOUR) * 2;
+  let html = '';
+
+  // Header row
+  html += '<div class="week-grid">';
+  html += '<div class="week-header">时间</div>';
+  for (let d = 0; d < 7; d++) {
+    const date = addDays(currentWeekStart, d);
+    const isToday = fmtFull(date) === fmtFull(new Date());
+    html += `<div class="week-header${isToday?' today':''}"><div class="day-name">${DAYS[d]}</div>${fmt(date)}</div>`;
+  }
+
+  // Time rows + day columns
+  for (let s = 0; s < totalSlots; s++) {
+    const h = START_HOUR + Math.floor(s / 2);
+    const m = (s % 2 === 0) ? '00' : '30';
+    const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
+    html += `<div class="time-label"><span>${label}</span></div>`;
+    for (let d = 0; d < 7; d++) {
+      html += `<div class="day-col${s%2===0?'':' half'}" data-day="${d}" data-slot="${s}"></div>`;
+    }
+  }
+  html += '</div>';
+
+  const container = document.getElementById('weekView');
+  container.innerHTML = html;
+
+  // 放置课节块
+  const grid = container.querySelector('.week-grid');
+  const cols = 8; // 1 time col + 7 day cols
+
+  for (let d = 0; d < 7; d++) {
+    // 1. 师资固定时间背景
+    teacher.fixed.filter(f => f.day === d).forEach(f => {
+      const startSlot = timeToSlot(f.start);
+      const endSlot = timeToSlot(f.end);
+      const slot = document.createElement('div');
+      slot.className = 'slot fixed';
+      slot.style.top = slotToY(startSlot, cellH) + 'px';
+      slot.style.height = slotHeight(f.start, f.end, cellH) + 'px';
+      slot.innerHTML = `<div class="slot-title" style="text-align:center;font-size:10px;opacity:0.6;margin-top:4px;">固定时间</div>`;
+      slot.style.zIndex = '1';
+      // 找到对应列的第一个cell作为参考
+      const refCell = grid.querySelector(`.day-col[data-day="${d}"][data-slot="0"]`);
+      if (!refCell) return;
+      const parent = refCell.parentElement;
+      // 实际上用绝对定位到grid里，需要一个wrapper
+      placeSlotInGrid(grid, d, startSlot, endSlot, slot, cellH, cols, totalSlots);
+    });
+
+    // 2. 课节
+    teacher.lessons.filter(l => l.day === d).forEach(l => {
+      const startSlot = timeToSlot(l.start);
+      const endSlot = timeToSlot(l.end);
+      const slot = document.createElement('div');
+      slot.className = `slot ${l.type}`;
+      slot.style.top = slotToY(startSlot, cellH) + 'px';
+      slot.style.height = slotHeight(l.start, l.end, cellH) + 'px';
+      slot.innerHTML = `<div class="slot-title">${l.studentName}</div><div class="slot-info">${l.start}-${l.end} ${l.type==='oes'?'OES':'省心约'}</div>`;
+      slot.onclick = () => showModal(l);
+      placeSlotInGrid(grid, d, startSlot, endSlot, slot, cellH, cols, totalSlots);
+    });
+  }
+}
+
+function placeSlotInGrid(grid, dayIndex, startSlot, endSlot, slotEl, cellH, cols, totalSlots) {
+  // We need a positioning container for each day column
+  let wrapper = grid.querySelector(`.day-wrapper[data-day="${dayIndex}"]`);
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.className = 'day-wrapper';
+    wrapper.dataset.day = dayIndex;
+    wrapper.style.cssText = `position:relative;grid-column:${dayIndex+2};grid-row:2/span ${totalSlots};`;
+    grid.appendChild(wrapper);
+  }
+  slotEl.style.position = 'absolute';
+  slotEl.style.top = startSlot * cellH + 'px';
+  slotEl.style.height = (endSlot - startSlot) * cellH + 'px';
+  slotEl.style.left = '2px';
+  slotEl.style.right = '2px';
+  wrapper.appendChild(slotEl);
+}
+
+function renderDay() {
+  const teacher = teacherData[document.getElementById('teacherSelect').value];
+  const cellH = 60;
+  const totalSlots = (END_HOUR - START_HOUR) * 2;
+  let html = '<div class="day-grid">';
+
+  for (let s = 0; s < totalSlots; s++) {
+    const h = START_HOUR + Math.floor(s / 2);
+    const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
+    html += `<div class="time-label"><span>${label}</span></div>`;
+    html += `<div class="day-detail-col${s%2===0?'':' half'}" data-slot="${s}"></div>`;
+  }
+  html += '</div>';
+
+  const container = document.getElementById('dayView');
+  container.innerHTML = html;
+
+  const grid = container.querySelector('.day-grid');
+  const d = currentDayIndex;
+
+  // wrapper
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = `position:relative;grid-column:2;grid-row:1/span ${totalSlots};`;
+  grid.appendChild(wrapper);
+
+  // 固定时间
+  teacher.fixed.filter(f => f.day === d).forEach(f => {
+    const startSlot = timeToSlot(f.start);
+    const endSlot = timeToSlot(f.end);
+    const el = document.createElement('div');
+    el.className = 'day-slot fixed';
+    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;display:flex;align-items:center;justify-content:center;z-index:1;`;
+    el.innerHTML = '<div style="font-size:12px;opacity:0.5;">师资固定时间</div>';
+    wrapper.appendChild(el);
+  });
+
+  // 课节
+  teacher.lessons.filter(l => l.day === d).forEach(l => {
+    const startSlot = timeToSlot(l.start);
+    const endSlot = timeToSlot(l.end);
+    const el = document.createElement('div');
+    el.className = `day-slot ${l.type}`;
+    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;z-index:2;`;
+    el.innerHTML = `
+      <div class="ds-row">
+        <span class="ds-name">${l.studentName}</span>
+        <span class="ds-tag">${l.type==='oes'?'OES':'省心约'}</span>
+      </div>
+      <div class="ds-detail">${l.start}-${l.end} | ${l.courseType} | ${l.tutor} | #${l.id}</div>
+    `;
+    el.onclick = () => showModal(l);
+    wrapper.appendChild(el);
+  });
+}
+
+function updateNavLabel() {
+  const label = document.getElementById('navLabel');
+  if (currentView === 'week') {
+    const end = addDays(currentWeekStart, 6);
+    label.textContent = `${fmtFull(currentWeekStart)} ~ ${fmtFull(end)}`;
+  } else {
+    const date = addDays(currentWeekStart, currentDayIndex);
+    label.textContent = `${fmtFull(date)} ${DAYS[currentDayIndex]}`;
+  }
+}
+
+function navPrev() {
+  if (currentView === 'week') {
+    currentWeekStart = addDays(currentWeekStart, -7);
+  } else {
+    if (currentDayIndex === 0) {
+      currentWeekStart = addDays(currentWeekStart, -7);
+      currentDayIndex = 6;
+    } else {
+      currentDayIndex--;
+    }
+  }
+  render();
+}
+
+function navNext() {
+  if (currentView === 'week') {
+    currentWeekStart = addDays(currentWeekStart, 7);
+  } else {
+    if (currentDayIndex === 6) {
+      currentWeekStart = addDays(currentWeekStart, 7);
+      currentDayIndex = 0;
+    } else {
+      currentDayIndex++;
+    }
+  }
+  render();
+}
+
+function goToday() {
+  currentWeekStart = getMonday(new Date());
+  currentDayIndex = (new Date().getDay() + 6) % 7; // 0=周一
+  render();
+}
+
+function switchView(v) {
+  currentView = v;
+  document.getElementById('btnWeek').classList.toggle('active', v==='week');
+  document.getElementById('btnDay').classList.toggle('active', v==='day');
+  document.getElementById('weekView').classList.toggle('hidden', v!=='week');
+  document.getElementById('dayView').classList.toggle('hidden', v!=='day');
+  if (v === 'day' && currentDayIndex === undefined) currentDayIndex = 0;
+  render();
+}
+
+function showModal(lesson) {
+  document.getElementById('modalTitle').textContent = '课节详情';
+  const tagClass = lesson.type === 'oes' ? 'oes' : 'sxy';
+  const tagLabel = lesson.type === 'oes' ? 'OES强制约课' : '省心约规则';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-row"><div class="modal-label">课节ID</div><div class="modal-value">${lesson.id}</div></div>
+    <div class="modal-row"><div class="modal-label">学员ID</div><div class="modal-value">${lesson.studentId}</div></div>
+    <div class="modal-row"><div class="modal-label">学员姓名</div><div class="modal-value">${lesson.studentName}</div></div>
+    <div class="modal-row"><div class="modal-label">上课时间</div><div class="modal-value">${lesson.start} - ${lesson.end}</div></div>
+    <div class="modal-row"><div class="modal-label">来源系统</div><div class="modal-value"><span class="modal-tag ${tagClass}">${tagLabel}</span></div></div>
+    <div class="modal-row"><div class="modal-label">二讲老师</div><div class="modal-value">${lesson.tutor}</div></div>
+    <div class="modal-row"><div class="modal-label">课程类型</div><div class="modal-value">${lesson.courseType}</div></div>
+  `;
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+// 初始化
+render();
+</script>
+</body>
+</html>
