@@ -153,16 +153,16 @@ body {
 }
 
 /* 周视图 */
-.week-grid {
-  display: grid;
-  grid-template-columns: 60px repeat(7, 1fr);
+.week-table {
+  width: 100%;
   min-width: 900px;
+  border-collapse: collapse;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  overflow: hidden;
+  table-layout: fixed;
 }
-.week-header {
+.week-table th {
   background: #fafafa;
   padding: 10px 4px;
   text-align: center;
@@ -172,33 +172,34 @@ body {
   color: #333;
   border-right: 1px solid #f0f0f0;
 }
-.week-header:first-child { background: #fafafa; }
-.week-header .day-name { color: #999; font-weight: 400; font-size: 12px; }
-.week-header.today { color: #1677ff; }
-.week-header.today .day-name { color: #1677ff; }
-
-.time-label {
+.week-table th:first-child { width: 60px; }
+.week-table th .day-name { color: #999; font-weight: 400; font-size: 12px; }
+.week-table th.today { color: #1677ff; }
+.week-table th.today .day-name { color: #1677ff; }
+.week-table td.time-col {
+  width: 60px;
   padding: 0 6px;
   font-size: 11px;
   color: #bbb;
   text-align: right;
   border-right: 1px solid #f0f0f0;
-  position: relative;
+  vertical-align: top;
   height: 40px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding-top: 2px;
 }
-.time-label span { transform: translateY(-50%); }
-
-.day-col {
-  position: relative;
+.week-table td.day-cell {
   border-right: 1px solid #f5f5f5;
-  height: 40px;
   border-bottom: 1px solid #f8f8f8;
+  height: 40px;
+  padding: 0;
+  vertical-align: top;
 }
-.day-col.half { border-bottom: 1px dashed #f5f5f5; }
+.week-table tr.half-row td.day-cell { border-bottom: 1px dashed #f5f5f5; }
+
+/* 日期列容器 - 用于绝对定位课节块 */
+.day-column-wrap {
+  position: relative;
+  min-width: 0;
+}
 
 /* 课节块 */
 .slot {
@@ -242,26 +243,19 @@ body {
 .slot-info { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0.8; font-size: 10px; }
 
 /* 日视图 */
-.day-grid {
-  display: grid;
-  grid-template-columns: 60px 1fr;
-  min-width: 400px;
+.day-table {
+  width: 100%;
   max-width: 700px;
   margin: 0 auto;
+  border-collapse: collapse;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  overflow: hidden;
+  table-layout: fixed;
 }
-.day-grid .time-label {
-  height: 60px;
-}
-.day-detail-col {
-  position: relative;
-  border-bottom: 1px solid #f8f8f8;
-  height: 60px;
-}
-.day-detail-col.half { border-bottom: 1px dashed #f5f5f5; }
+.day-table td.time-col { width: 60px; padding: 0 6px; font-size: 11px; color: #bbb; text-align: right; border-right: 1px solid #f0f0f0; vertical-align: top; height: 60px; }
+.day-table td.day-cell { border-bottom: 1px solid #f8f8f8; height: 60px; padding: 0; }
+.day-table tr.half-row td.day-cell { border-bottom: 1px dashed #f5f5f5; }
 .day-slot {
   position: absolute;
   left: 4px; right: 4px;
@@ -280,12 +274,7 @@ body {
 .day-slot.free { background: rgba(255,255,255,0.6); border: 1px dashed #d9d9d9; color: #bbb; }
 .day-slot .ds-row { display: flex; justify-content: space-between; align-items: center; }
 .day-slot .ds-name { font-weight: 700; font-size: 14px; }
-.day-slot .ds-tag {
-  font-size: 10px;
-  padding: 1px 6px;
-  border-radius: 3px;
-  font-weight: 600;
-}
+.day-slot .ds-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
 .day-slot.sxy .ds-tag { background: #d9f7be; color: #389e0d; }
 .day-slot.oes .ds-tag { background: #ffe7ba; color: #d46b08; }
 .day-slot .ds-detail { font-size: 11px; opacity: 0.8; margin-top: 2px; }
@@ -523,112 +512,90 @@ function renderWeek() {
   const teacher = teacherData[document.getElementById('teacherSelect').value];
   const cellH = 40;
   const totalSlots = (END_HOUR - START_HOUR) * 2;
-  let html = '';
+  const totalH = totalSlots * cellH;
 
-  // Header row
-  html += '<div class="week-grid">';
-  html += '<div class="week-header">时间</div>';
+  // 构建 table
+  let html = '<table class="week-table"><thead><tr><th></th>';
   for (let d = 0; d < 7; d++) {
     const date = addDays(currentWeekStart, d);
     const isToday = fmtFull(date) === fmtFull(new Date());
-    html += `<div class="week-header${isToday?' today':''}"><div class="day-name">${DAYS[d]}</div>${fmt(date)}</div>`;
+    html += `<th${isToday?' class="today"':''}><div class="day-name">${DAYS[d]}</div>${fmt(date)}</th>`;
   }
+  html += '</tr></thead><tbody>';
 
-  // Time rows + day columns
   for (let s = 0; s < totalSlots; s++) {
     const h = START_HOUR + Math.floor(s / 2);
-    const m = (s % 2 === 0) ? '00' : '30';
     const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
-    html += `<div class="time-label"><span>${label}</span></div>`;
+    const halfClass = (s % 2 !== 0) ? ' class="half-row"' : '';
+    html += `<tr${halfClass}><td class="time-col">${label}</td>`;
     for (let d = 0; d < 7; d++) {
-      html += `<div class="day-col${s%2===0?'':' half'}" data-day="${d}" data-slot="${s}"></div>`;
+      html += `<td class="day-cell"></td>`;
     }
+    html += '</tr>';
   }
+  html += '</tbody></table>';
+
+  // Overlay层，放在table上方用于绝对定位课节块
+  html += '<div id="weekOverlay" style="position:relative;margin-top:-' + totalH + 'px;height:' + totalH + 'px;margin-left:60px;pointer-events:none;">';
   html += '</div>';
 
   const container = document.getElementById('weekView');
   container.innerHTML = html;
 
-  // 放置课节块
-  const grid = container.querySelector('.week-grid');
-  const cols = 8; // 1 time col + 7 day cols
+  // 获取实际列宽
+  const table = container.querySelector('.week-table');
+  const headerCells = table.querySelectorAll('thead th');
+  const overlay = document.getElementById('weekOverlay');
+  const overlayW = overlay.offsetWidth;
+  const colW = overlayW / 7;
 
   for (let d = 0; d < 7; d++) {
-    // 1. 师资固定时间背景
+    // 固定时间
     teacher.fixed.filter(f => f.day === d).forEach(f => {
       const startSlot = timeToSlot(f.start);
       const endSlot = timeToSlot(f.end);
-      const slot = document.createElement('div');
-      slot.className = 'slot fixed';
-      slot.style.top = slotToY(startSlot, cellH) + 'px';
-      slot.style.height = slotHeight(f.start, f.end, cellH) + 'px';
-      slot.innerHTML = `<div class="slot-title" style="text-align:center;font-size:10px;opacity:0.6;margin-top:4px;">固定时间</div>`;
-      slot.style.zIndex = '1';
-      // 找到对应列的第一个cell作为参考
-      const refCell = grid.querySelector(`.day-col[data-day="${d}"][data-slot="0"]`);
-      if (!refCell) return;
-      const parent = refCell.parentElement;
-      // 实际上用绝对定位到grid里，需要一个wrapper
-      placeSlotInGrid(grid, d, startSlot, endSlot, slot, cellH, cols, totalSlots);
+      const el = document.createElement('div');
+      el.className = 'slot fixed';
+      el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:${d*colW+2}px;width:${colW-4}px;z-index:1;pointer-events:auto;`;
+      el.innerHTML = '<div class="slot-title" style="text-align:center;font-size:10px;opacity:0.6;margin-top:4px;">固定时间</div>';
+      overlay.appendChild(el);
     });
 
-    // 2. 课节
+    // 课节
     teacher.lessons.filter(l => l.day === d).forEach(l => {
       const startSlot = timeToSlot(l.start);
       const endSlot = timeToSlot(l.end);
-      const slot = document.createElement('div');
-      slot.className = `slot ${l.type}`;
-      slot.style.top = slotToY(startSlot, cellH) + 'px';
-      slot.style.height = slotHeight(l.start, l.end, cellH) + 'px';
-      slot.innerHTML = `<div class="slot-title">${l.studentName}</div><div class="slot-info">${l.start}-${l.end} ${l.type==='oes'?'OES':'省心约'}</div>`;
-      slot.onclick = () => showModal(l);
-      placeSlotInGrid(grid, d, startSlot, endSlot, slot, cellH, cols, totalSlots);
+      const el = document.createElement('div');
+      el.className = `slot ${l.type}`;
+      el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:${d*colW+2}px;width:${colW-4}px;z-index:2;pointer-events:auto;`;
+      el.innerHTML = `<div class="slot-title">${l.studentName}</div><div class="slot-info">${l.start}-${l.end} ${l.type==='oes'?'OES':'省心约'}</div>`;
+      el.onclick = () => showModal(l);
+      overlay.appendChild(el);
     });
   }
-}
-
-function placeSlotInGrid(grid, dayIndex, startSlot, endSlot, slotEl, cellH, cols, totalSlots) {
-  // We need a positioning container for each day column
-  let wrapper = grid.querySelector(`.day-wrapper[data-day="${dayIndex}"]`);
-  if (!wrapper) {
-    wrapper = document.createElement('div');
-    wrapper.className = 'day-wrapper';
-    wrapper.dataset.day = dayIndex;
-    wrapper.style.cssText = `position:relative;grid-column:${dayIndex+2};grid-row:2/span ${totalSlots};`;
-    grid.appendChild(wrapper);
-  }
-  slotEl.style.position = 'absolute';
-  slotEl.style.top = startSlot * cellH + 'px';
-  slotEl.style.height = (endSlot - startSlot) * cellH + 'px';
-  slotEl.style.left = '2px';
-  slotEl.style.right = '2px';
-  wrapper.appendChild(slotEl);
 }
 
 function renderDay() {
   const teacher = teacherData[document.getElementById('teacherSelect').value];
   const cellH = 60;
   const totalSlots = (END_HOUR - START_HOUR) * 2;
-  let html = '<div class="day-grid">';
+  const totalH = totalSlots * cellH;
+  const d = currentDayIndex;
 
+  let html = '<table class="day-table"><tbody>';
   for (let s = 0; s < totalSlots; s++) {
     const h = START_HOUR + Math.floor(s / 2);
     const label = (s % 2 === 0) ? `${String(h).padStart(2,'0')}:00` : '';
-    html += `<div class="time-label"><span>${label}</span></div>`;
-    html += `<div class="day-detail-col${s%2===0?'':' half'}" data-slot="${s}"></div>`;
+    const halfClass = (s % 2 !== 0) ? ' class="half-row"' : '';
+    html += `<tr${halfClass}><td class="time-col">${label}</td><td class="day-cell"></td></tr>`;
   }
-  html += '</div>';
+  html += '</tbody></table>';
+  html += `<div id="dayOverlay" style="position:relative;margin-top:-${totalH}px;height:${totalH}px;margin-left:60px;pointer-events:none;"></div>`;
 
   const container = document.getElementById('dayView');
   container.innerHTML = html;
 
-  const grid = container.querySelector('.day-grid');
-  const d = currentDayIndex;
-
-  // wrapper
-  const wrapper = document.createElement('div');
-  wrapper.style.cssText = `position:relative;grid-column:2;grid-row:1/span ${totalSlots};`;
-  grid.appendChild(wrapper);
+  const overlay = document.getElementById('dayOverlay');
 
   // 固定时间
   teacher.fixed.filter(f => f.day === d).forEach(f => {
@@ -636,9 +603,9 @@ function renderDay() {
     const endSlot = timeToSlot(f.end);
     const el = document.createElement('div');
     el.className = 'day-slot fixed';
-    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;display:flex;align-items:center;justify-content:center;z-index:1;`;
+    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;display:flex;align-items:center;justify-content:center;z-index:1;pointer-events:auto;`;
     el.innerHTML = '<div style="font-size:12px;opacity:0.5;">师资固定时间</div>';
-    wrapper.appendChild(el);
+    overlay.appendChild(el);
   });
 
   // 课节
@@ -647,7 +614,7 @@ function renderDay() {
     const endSlot = timeToSlot(l.end);
     const el = document.createElement('div');
     el.className = `day-slot ${l.type}`;
-    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;z-index:2;`;
+    el.style.cssText = `position:absolute;top:${startSlot*cellH}px;height:${(endSlot-startSlot)*cellH}px;left:4px;right:4px;z-index:2;pointer-events:auto;`;
     el.innerHTML = `
       <div class="ds-row">
         <span class="ds-name">${l.studentName}</span>
@@ -656,7 +623,7 @@ function renderDay() {
       <div class="ds-detail">${l.start}-${l.end} | ${l.courseType} | ${l.tutor} | #${l.id}</div>
     `;
     el.onclick = () => showModal(l);
-    wrapper.appendChild(el);
+    overlay.appendChild(el);
   });
 }
 
