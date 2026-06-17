@@ -734,7 +734,7 @@
                             if (sxyRule) {
                                 const el = createEntry('sxy-pending', slot, slot + 1, cellH, {
                                     time: slotTime + ' - ' + slotEnd,
-                                    desc: sxyRule.studentName + ' ' + maskPhone(sxyRule.studentId) + ' 省心约'
+                                    desc: sxyRule.studentName + ' ' + maskPhone(sxyRule.studentId)
                                 });
                                 const tag = document.createElement('div');
                                 tag.className = 'sxy-badge';
@@ -776,7 +776,7 @@
                         if (isOccupied) return;
                         const el = createEntry('sxy-pending', rs, re, cellH, {
                             time: r.start + ' - ' + r.end,
-                            desc: r.studentName + ' ' + maskPhone(r.studentId) + ' 省心约'
+                            desc: r.studentName + ' ' + maskPhone(r.studentId)
                         });
                         const tag = document.createElement('div');
                         tag.className = 'sxy-badge';
