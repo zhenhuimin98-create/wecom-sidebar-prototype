@@ -1085,6 +1085,7 @@
                     <div class="pop-row"><div class="pop-label">班级ID</div><div class="pop-value">${lesson.classId}</div></div>
 
                     <div class="pop-row"><div class="pop-label">省心约规则</div><div class="pop-value">${isSxyRuleMatch(lesson) ? '是' : '否'}</div></div>
+                    ${isSxyRuleMatch(lesson) ? `<div class="pop-row"><div class="pop-label">规则时段</div><div class="pop-value">每${DAYS[lesson.day]} ${lesson.start}-${lesson.end}</div></div>` : ''}
                     <div class="pop-row"><div class="pop-label">预计结课</div><div class="pop-value">${getExpectedEndDate(lesson.studentId)}</div></div>
                 </div>
             `;
